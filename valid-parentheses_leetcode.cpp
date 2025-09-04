@@ -1,98 +1,133 @@
+/**
+ * @file valid-parentheses_leetcode.cpp
+ * @brief Solution for the "Valid Parentheses" problem on LeetCode.
+ * @details This file contains a class `Solution` that implements a stack-based
+ * approach to determine if a string of parentheses is valid.
+ */
 #include <iostream>
 
 using namespace std ;
 
+/// @brief Maximum size of the character stack.
 #define max_size 10000
 
+/**
+ * @class Solution
+ * @brief Implements a solution for the "Valid Parentheses" problem.
+ *
+ * This class uses an internal stack to validate a string containing just the
+ * characters '(', ')', '{', '}', '[' and ']'.
+ */
 class Solution {
     private :
-        char _chars_stack [max_size] ;
-        int _top ;
-        int _closed ;
-        int _bracket_status ;
-        int _curle_bracket_status ;
-        int _square_bracket_status ;
-
+        char _chars_stack [max_size] ; ///< Character array to implement the stack.
+        int _top ;                     ///< Index of the top element of the stack.
         
-
+        /**
+         * @brief Checks if the stack is empty.
+         * @return true if the stack is empty, false otherwise.
+         */
         bool is_empty()
         {
             return _top == -1 ;
         }
 
+        /**
+         * @brief Checks if the stack is full.
+         * @return true if the stack is full, false otherwise.
+         */
         bool is_full()
         {
             return _top == max_size - 1 ;
         }
 
-        void push_open_bracket(char c)
-        {
-            push(c) ;
-        }
-
-    
-    public :
-        Solution()
-        {
-            _top = -1 ;
-            _closed = 0 ;
-            _bracket_status = 0 ;
-            _curle_bracket_status = 0 ;
-            _square_bracket_status = 0 ;
-        }
-    
-void push(char c) 
+        /**
+         * @brief Pushes a character onto the stack.
+         * @param c The character to push.
+         */
+        void push(char c) 
         {   
             if(is_full())
             {
                 cerr<<"stack is full\n" ;
                 return ;
             }
-            
             else
             {
                 _top++ ;
                 _chars_stack[_top] = c ;
             }
         }
+        /**
+         * @brief A specific wrapper to push an opening bracket.
+         * @param c The opening bracket character to push.
+         */
+        void push_open_bracket(char c)
+        {
+            push(c) ;
+        }
+        /**
+         * @brief Pops the top element from the stack.
+         */
+        void pop()
+        {
+            if(is_empty())
+            {
+                cerr<<"stack is empty\n" ;
+                return ;
+            }
+            else
+            {
+                _top-- ;
+            }
+        }
 
+    
+    public :
+        /**
+         * @brief Construct a new Solution object.
+         *
+         * Initializes the stack to an empty state.
+         */
+        Solution()
+        {
+            _top = -1 ;
+        }
+
+        /**
+         * @brief Determines if the input string has valid parentheses.
+         * @param s The input string containing parentheses.
+         * @return true if the string is valid, false otherwise.
+         */
         bool isValid(string s)
         {
             for (int i = 0 ; i < s.length() ; i++)
             {
                 if (s[i] == '(')
                 {
-                    _bracket_status = _bracket_status + 1 ;
-                    _closed = _closed + 1 ;
                     push_open_bracket(s[i]) ;
                 }
 
                 else if(s[i] == '{')
                 {
-                    _curle_bracket_status = _curle_bracket_status + 1 ;
-                    _closed = _closed + 2 ;
                     push_open_bracket(s[i]) ;
                 }              
                 
                 else if(s[i] == '[')
                 {
-                    _square_bracket_status = _square_bracket_status + 1 ;
-                    _closed = _closed + 3 ;
                     push_open_bracket(s[i]) ;
                 }
 
                 else if (s[i] == ')')
                 {
-                    if(is_empty() || _bracket_status != 0 || _curle_bracket_status != 0 || _square_bracket_status != 0)
+                    if(is_empty() )
                     {
                         return false ;  
                     }
 
-                    if (_chars_stack[_top] == '(' || _chars_stack[_top] == '}' || _chars_stack[_top] == ']' || _chars_stack[_top] == ')')
+                    if (_chars_stack[_top] == '(')
                     {
-                        _bracket_status = _bracket_status - 1 ;
-                        _closed = _closed - 1 ;
-                        push(s[i]) ;
+                        pop() ;
                     }
 
                     else
@@ -103,16 +138,14 @@ void push(char c)
 
                 else if (s[i] == '}')
                 {
-                    if(is_empty() || _bracket_status != 0 || _curle_bracket_status != 0 || _square_bracket_status != 0)
+                    if(is_empty())
                     {
                         return false ;  
                     }
 
-                    if (_chars_stack[_top] == '{' || _chars_stack[_top] == ')' || _chars_stack[_top] == ']' || _chars_stack[_top] == '}')
+                    if (_chars_stack[_top] == '{')
                     {
-                        _curle_bracket_status = _curle_bracket_status - 1 ;
-                        _closed = _closed - 2 ;
-                        push(s[i]) ;
+                        pop();
                     }
 
                     else
@@ -123,16 +156,14 @@ void push(char c)
 
                 else if (s[i] == ']')
                 {
-                    if(is_empty() || _bracket_status != 0 || _curle_bracket_status != 0 || _square_bracket_status != 0)
+                    if(is_empty())
                     {
                         return false ;  
                     }
 
-                    if (_chars_stack[_top] == '[' || _chars_stack[_top] == '}' || _chars_stack[_top] == ')' || _chars_stack[_top] == ']')
+                    if (_chars_stack[_top] == '[' )
                     {
-                        _square_bracket_status = _square_bracket_status - 1 ;
-                        _closed = _closed - 3 ;
-                        push(s[i]) ;
+                        pop();
                     }
 
                     else
@@ -141,29 +172,28 @@ void push(char c)
                     }
                 }   
             }
-            if(_closed != 0 || _chars_stack[_top] == '(' || _chars_stack[_top] == '{' || _chars_stack[_top] == '[')
+            
+            if(is_empty())
             {
-                return false ;
+                return true ;
+            }
+
+            if(_chars_stack[_top] == '(' || _chars_stack[_top] == '[' || _chars_stack[_top] == '{' )
+            {
+                return false;
             }
             return true ;
         }
-    
-        void print_stack()
-        {
-            for(int i = 0 ; i <= _top ; i++)
-            {
-                cout<<_chars_stack[i] ;
-            }
-            cout<<endl ;
-            cout << _closed ;
-        }
 };
 
+/**
+ * @brief Main function to test the Solution class.
+ * @return 0 on successful execution.
+ */
 int main() 
 {
     Solution s1 ;
     s1.isValid("[([]])") ;
-    s1.print_stack() ;
     cout<<endl ;
     return 0;
 }
