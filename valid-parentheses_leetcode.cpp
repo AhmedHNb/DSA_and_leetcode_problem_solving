@@ -130,12 +130,20 @@ class Solution {
                 {   
                     if(is_empty() || bracket_B_Status != _bracket_Status || bracket_C_Status != _curle_bracket_Status || bracket_S_Status != _square_bracket_Status)
                     {
+                        cout << _closed << endl ;
+                        cout << bracket_B_Status << endl ;
+                        cout << bracket_C_Status << endl ;
+                        cout << bracket_S_Status << endl ;
                         return false ;
                     }
 
                     if (_chars_stack[_top] == '(' || _chars_stack[_top] == '}' || _chars_stack[_top] == ']' || _chars_stack[_top] == ')')
                     {
                         _bracket_Status = _bracket_Status - 1 ;
+                        bracket_B_Status = _bracket_Status ;
+                        curle_bracket_B_Status = _bracket_Status ;
+                        square_bracket_B_Status = _bracket_Status ;
+
                         _closed = _closed - 1 ;
                         push(s[i]) ;
                     }
@@ -156,6 +164,9 @@ class Solution {
                     if (_chars_stack[_top] == '{' || _chars_stack[_top] == ')' || _chars_stack[_top] == ']' || _chars_stack[_top] == '}')
                     {   
                         _curle_bracket_Status = _curle_bracket_Status - 2 ;
+                        bracket_C_Status = _curle_bracket_Status ;
+                        curle_bracket_C_Status = _curle_bracket_Status ;
+                        square_bracket_C_Status = _curle_bracket_Status ;
                         _closed = _closed - 2 ;
                         push(s[i]) ;
                     }
@@ -177,6 +188,9 @@ class Solution {
                     if(_chars_stack[_top] == '[' || _chars_stack[_top] == '}' || _chars_stack[_top] == ')' || _chars_stack[_top] == ']')
                     {
                         _square_bracket_Status = _square_bracket_Status - 3 ;
+                        bracket_S_Status = _square_bracket_Status ;
+                        curle_bracket_S_Status = _square_bracket_Status ;
+                        square_bracket_S_Status = _square_bracket_Status ;
                         _closed = _closed - 3 ;
                         push(s[i]) ;
                     }
@@ -208,7 +222,7 @@ class Solution {
 int main() 
 {
     Solution s1 ;
-    s1.isValid("(([]){})") ; //id
+    s1.isValid("[([]])") ;
     s1.print_stack() ;
     cout<<endl ;
     return 0;
